@@ -1,7 +1,7 @@
 {
     "doctype": {
         "prefix": "doctype",
-        "body": ["<!DOCTYPE>", "$1"],
+        "body": ["<!DOCTYPE$1>", "$0"],
         "description": "HTML - Defines the document type",
         "scope": "text.html"
     },
