@@ -423,32 +423,172 @@ return {
 					return_type = i(2, 'void'),
 					name = i(1, 'fun'),
 					params = i(3, 'void'),
-					doc = d(4, function (args)
-							-- local splitArgs = {}
-							-- for str in string.gmatch(args, ',') do
-							-- 	str = string.gsub(str, "%s+", "")
-							-- 	table.insert(splitArgs, str)
-							-- end
-							--
-							-- local nodes = {
-							-- 	t({'/**', '* '}),
-							-- 	i(1, 'basic description'),
-							-- 	t({'', '*'})
-							-- }
-							--
-							-- for index, arg in ipairs(splitArgs) do
-							-- 	nodes.insert(t('* @param '..arg))
-							-- 	nodes.insert(index + 1)
-							-- 	nodes.insert(t({'', ''}))
-							-- end
-							--
-							-- nodes.insert(t('*/'))
+					doc = d(4, function(args)
+						local splitArgs = {}
+						for str in string.gmatch(args[1][1], '[a-z0-9]+%s+[a-z0-9]+') do
+							local matches = string.gmatch(str, '%S+')
+							local _ = matches()
+							str = matches()
+							table.insert(splitArgs, str)
+						end
 
-							-- return sn(nil, nodes)
-							return sn(nil, t(args))
-					end, {3}),
+						local nodes = {
+							t({ '/**', '* ' }),
+							i(1, 'basic description'),
+							t({ '', '*', '' })
+						}
+
+						local jumpCount = 1
+
+						for index, arg in ipairs(splitArgs) do
+							table.insert(nodes, t('* @param ' .. arg))
+							table.insert(nodes, i(index + 1))
+							table.insert(nodes, t({ '', '' }))
+							jumpCount = jumpCount + 1;
+						end
+
+						if args[2][1] ~= 'void' then
+							table.insert(nodes, t('* @returns '))
+							table.insert(nodes, i(jumpCount + 1, 'a value'))
+							table.insert(nodes, t({ '', '' }))
+						end
+
+						table.insert(nodes, t('*/'))
+
+						return sn(nil, nodes)
+					end, { 3, 2 }),
 				})
 			)
 		})
+	),
+
+	s({
+			trig = 'typedef',
+			name = 'typedef',
+			desc = '"typedef" snippet'
+		},
+		fmta('typedef <> <>;', { i(1, 'void'), i(2, 'Emptiness') })
+	),
+
+	s({
+			trig = 'struct',
+			name = 'struct',
+			desc = '"struct" snippets'
+		},
+		c(1, {
+			sn(nil, fmta('struct <>{ <> };', {
+				i(1, 'name_t'),
+				i(0, '/* TODO */'),
+			})),
+			sn(nil, fmta([[
+						typedef struct {
+						<>
+						} <>;
+						]], {
+				i(0, '/* TODO */'),
+				i(1, 'name_t')
+			}))
+		})
+	),
+
+	s({
+			trig = 'union',
+			name = 'union',
+			desc = '"union" snippets'
+		},
+		c(1, {
+			sn(nil, fmta('union <>{ <> };', {
+				i(1, 'name_t'),
+				i(0, '/* TODO */'),
+			})),
+			sn(nil, fmta([[
+						typedef union {
+						<>
+						} <>;
+						]], {
+				i(0, '/* TODO */'),
+				i(1, 'name_t')
+			}))
+		})
+	),
+
+	s({
+			trig = 'enum',
+			name = 'enum',
+			desc = '"enum" snippets'
+		},
+		c(1, {
+			sn(nil, fmta('enum <>{ <> };', {
+				i(1, 'name_t'),
+				i(0, '/* TODO */'),
+			})),
+			sn(nil, fmta([[
+						typedef enum {
+						<>
+						} <>;
+						]], {
+				i(0, '/* TODO */'),
+				i(1, 'name_t')
+			}))
+		})
+	),
+
+	s({
+			trig = 'allocate',
+			name = 'allocate',
+			desc = 'allocates memory and checks it.'
+		},
+		c(1, {
+			sn(nil, fmta('<> = malloc(sizeof(*<>) * <>);', {
+				r(1, 'variable'),
+				rep(1),
+				r(2, 'size')
+			})),
+			sn(nil, fmta([[
+				<> = malloc(sizeof(*<>) * <>);
+				if (<> == NULL) {
+					<>
+				}
+				]], {
+				r(1, 'variable'),
+				rep(1),
+				r(2, 'size'),
+				rep(1),
+				c(3, {
+					sn(nil, i(1, '/* ERROR */')),
+					sn(nil, fmta('perror("<>");', r(1, 'err_msg'))),
+					sn(nil, fmta('fprintf(<>, "<>");', {
+						r(1, 'stream'),
+						r(2, 'err_msg')
+					})),
+					isn(nil, fmta([[
+								perror("<>");
+
+								return <>;
+						]], {
+						r(1, 'err_msg'),
+						r(2, 'return_value')
+					}), "$PARENT_INDENT"),
+					isn(nil, fmta([[
+								fprintf(<>, "<>");
+								
+								return <>;
+							]], {
+						r(1, 'stream'),
+						r(2, 'err_msg'),
+						r(3, 'return_value')
+					}), "$PARENT_INDENT"
+					),
+				})
+			}))
+		}), {
+			stored = {
+				['variable'] = i(1, 'var'),
+				['size'] = i(1, 'size'),
+				['err_msg'] = i(1, 'ERROR'),
+				['stream'] = i(1, 'stderr'),
+				['return_value'] = i(1, 'EXIT_FAILURE')
+			}
+		}
 	)
 }
