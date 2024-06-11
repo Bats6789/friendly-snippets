@@ -115,5 +115,38 @@ return {
 		stored = {
 			['header_name'] = i(1, '...')
 		}
+	}),
+
+	s({
+		trig = '#def',
+		name = '#define macro',
+		desc = 'Macro snippet'
+	}, {
+		t('#define '),
+		c(1, {
+			sn(nil, { r(1, 'macro_name') }),
+			sn(nil, { r(1, 'macro_name'), t('('), i(2), t(') ('), i(3), t(')') })
+		})
+	}, {
+		stored = {
+			['macro_name'] = i(1, 'MACRO')
+		}
+	}),
+
+	s({
+		trig = '#if',
+		name = '#if macro',
+		desc = '#if snippet'
+	}, {
+		fmt([[
+		#if {cond}
+		{statement}
+		#endif /* if {cond} */
+		]], {
+			cond = i(1, '0'),
+			statement = i(0, '/* TODO */')
+		}, {
+			repeat_duplicate = true
+		})
 	})
 }
