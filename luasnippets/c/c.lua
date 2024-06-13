@@ -8,22 +8,11 @@ local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
 local r = ls.restore_node
-local events = require("luasnip.util.events")
-local ai = require("luasnip.nodes.absolute_indexer")
 local extras = require("luasnip.extras")
-local l = extras.lambda
 local rep = extras.rep
-local p = extras.partial
 local m = extras.match
-local n = extras.nonempty
-local dl = extras.dynamic_lambda
 local fmt = require("luasnip.extras.fmt").fmt
 local fmta = require("luasnip.extras.fmt").fmta
-local conds = require("luasnip.extras.expand_conditions")
-local postfix = require("luasnip.extras.postfix").postfix
-local types = require("luasnip.util.types")
-local parse = require("luasnip.util.parser").parse_snippet
-local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
 
 return {
@@ -564,15 +553,15 @@ return {
 					isn(nil, fmta([[
 								perror("<>");
 
-								return <>;
-						]], {
+									return <>;
+							]], {
 						r(1, 'err_msg'),
 						r(2, 'return_value')
 					}), "$PARENT_INDENT"),
 					isn(nil, fmta([[
 								fprintf(<>, "<>");
-								
-								return <>;
+
+									return <>;
 							]], {
 						r(1, 'stream'),
 						r(2, 'err_msg'),
@@ -585,6 +574,68 @@ return {
 			stored = {
 				['variable'] = i(1, 'var'),
 				['size'] = i(1, 'size'),
+				['err_msg'] = i(1, 'ERROR'),
+				['stream'] = i(1, 'stderr'),
+				['return_value'] = i(1, 'EXIT_FAILURE')
+			}
+		}
+	),
+
+	s({
+			trig = 'file',
+			name = 'File',
+			desc = 'File I/O snippet'
+		},
+		fmta('<> = fopen("<>", "<>");<>', {
+			r(1, 'file_pointer', { key = 'file_pointer_key' }),
+			r(2, 'file_name'),
+			r(3, 'mode'),
+			c(4, {
+				t(''),
+				sn(nil, fmta([[
+					<>
+					if (<> == NULL) {
+						<>
+					}
+					]], {
+					t(''),
+					f(function(args)
+						return args[1]
+					end, k('file_pointer')),
+					c(1, {
+						sn(nil, i(1, '/* ERROR */')),
+						sn(nil, fmta('perror("<>");', r(1, 'err_msg'))),
+						sn(nil, fmta('fprintf(<>, "<>");', {
+							r(1, 'stream'),
+							r(2, 'err_msg')
+						})),
+						isn(nil, fmta([[
+								perror("<>");
+
+									return <>;
+							]], {
+							r(1, 'err_msg'),
+							r(2, 'return_value')
+						}), "$PARENT_INDENT"),
+						isn(nil, fmta([[
+								fprintf(<>, "<>");
+
+									return <>;
+							]], {
+							r(1, 'stream'),
+							r(2, 'err_msg'),
+							r(3, 'return_value')
+						}), "$PARENT_INDENT"
+						),
+					})
+				}))
+			})
+		}),
+		{
+			stored = {
+				['file_pointer'] = i(1, 'file'),
+				['file_name'] = i(1, 'FILE_NAME'),
+				['mode'] = c(1, { t('r'), t('r'), t('w'), t('a'), t('r+'), t('w+'), t('a+') }),
 				['err_msg'] = i(1, 'ERROR'),
 				['stream'] = i(1, 'stderr'),
 				['return_value'] = i(1, 'EXIT_FAILURE')
