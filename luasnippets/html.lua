@@ -21,7 +21,10 @@ return {
 			name = 'doctype',
 			desc = 'HTML - Defines the document type'
 		},
-		fmt('<!DOCTYPE{}>', i(1))
+		c(1, {
+			 t('<!DOCTYPE>'),
+			sn(nil, fmt('<!DOCTYPE {}>', i(1, 'html')))
+		})
 	),
 
 	s({
@@ -29,7 +32,7 @@ return {
 			name = 'a',
 			desc = 'HTML - Defines a hyperlink',
 		},
-		fmt('<a href="{}">{}</a>', { i(1), i(2) })
+		fmt('<a href="{}">{}</a>', { i(1), i(2, 'link') })
 	),
 
 	s({
