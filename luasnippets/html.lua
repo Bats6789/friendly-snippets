@@ -22,7 +22,7 @@ return {
 			desc = 'HTML - Defines the document type'
 		},
 		c(1, {
-			 t('<!DOCTYPE>'),
+			t('<!DOCTYPE>'),
 			sn(nil, fmt('<!DOCTYPE {}>', i(1, 'html')))
 		})
 	),
@@ -32,7 +32,10 @@ return {
 			name = 'a',
 			desc = 'HTML - Defines a hyperlink',
 		},
-		fmt('<a href="{}">{}</a>', { i(1), i(2, 'link') })
+		c(1, {
+			sn(nil, fmt('<a>{}</a>', i(1))),
+			sn(nil, fmt('<a href="{}">{}</a>', { i(1), i(2, 'link') }))
+		})
 	),
 
 	s({
@@ -40,7 +43,10 @@ return {
 			name = 'abbr',
 			desc = 'HTML - Defines an abbreviation'
 		},
-		fmt('<abbr title="{}">{}</abbr>', { i(1), i(2) })
+		c(1, {
+			sn(nil, fmt('<abbr>{}</abbr>', i(1))),
+			sn(nil, fmt('<abbr title="{}">{}</abbr>', { i(1), i(2) }))
+		})
 	),
 
 	s({
@@ -60,11 +66,14 @@ return {
 			name = 'area',
 			desc = 'HTML - Defines an area inside an image map'
 		},
-		fmt('<area shape="{}" coords="{}" href="{}" alt="{}">', {
-			i(1),
-			i(2),
-			i(3),
-			i(4)
+		c(1, {
+			sn(nil, fmt('<area{}>', i(1))),
+			sn(nil, fmt('<area shape="{}" coords="{}" href="{}" alt="{}">', {
+				i(1),
+				i(2),
+				i(3),
+				i(4)
+			}))
 		})
 	),
 
@@ -118,7 +127,10 @@ return {
 			name = 'base',
 			desc = 'HTML - Defines a base URL for all the links in a page',
 		},
-		fmt('<base href="{}" target="{}">', { i(1), i(2) })
+		c(1, {
+			sn(nil, fmt('<base{}>', i(1))),
+			sn(nil, fmt('<base href="{}" target="{}">', { i(1), i(2) }))
+		})
 	),
 
 	s({
@@ -150,15 +162,24 @@ return {
 	),
 
 	s({
-		trig = 'blockquote',
-		name = 'blockquote',
-		desc = 'HTML - Defines a long quotation',
-	}, fmt([[
+			trig = 'blockquote',
+			name = 'blockquote',
+			desc = 'HTML - Defines a long quotation',
+		},
+		c(1, {
+			fmt([[
+					<blockquote{}>
+						{}
+					</blockquote>
+				]], { i(2), i(1) }),
+			fmt([[
 					<blockquote cite="{}">
 						{}
 					</blockquote>
-					]], { i(2), i(1) })
+				]], { i(2), i(1) })
+		})
 	),
+
 
 	s({
 		trig = 'body',
@@ -289,14 +310,40 @@ return {
 	),
 
 	s({
-		trig = 'div',
-		name = 'div',
-		desc = 'HTML - Defines a section in a document',
-	}, fmt([[
-				<div>
-					{}
-				</div>
-				]], i(1))
+			trig = 'div',
+			name = 'div',
+			desc = 'HTML - Defines a section in a document',
+		},
+		c(1, {
+			sn(nil,
+				fmt([[
+					<div>
+						{}
+					</div>
+					]], i(1))
+			),
+			sn(nil,
+				fmt([[
+					<div class="{}">
+						{}
+					</div>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<div id="{}">
+						{}
+					</div>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<div class="{}" id="{}">
+						{}
+					</div>
+					]], { i(2), i(3), i(1) })
+			)
+		})
 	),
 
 	s({
@@ -383,40 +430,88 @@ return {
 	),
 
 	s({
-		trig = 'h1',
-		name = 'h1',
-		desc = 'HTML - Defines header 1',
-	}, fmt('<h1>{}</h1>', i(1))
+			trig = 'h1',
+			name = 'h1',
+			desc = 'HTML - Defines header 1',
+		},
+		c(1, {
+			sn(nil, fmt('<h1>{}</h1>', i(1))),
+			sn(nil, fmt([[
+							<h1>
+								{}
+							</h1>
+						]], i(1)))
+		})
 	),
 	s({
-		trig = 'h2',
-		name = 'h2',
-		desc = 'HTML - Defines header 2',
-	}, fmt('<h2>{}</h2>', i(1))
+			trig = 'h2',
+			name = 'h2',
+			desc = 'HTML - Defines header 2',
+		},
+		c(1, {
+			sn(nil, fmt('<h2>{}</h2>', i(1))),
+			sn(nil, fmt([[
+							<h2>
+								{}
+							</h2>
+						]], i(1)))
+		})
 	),
 	s({
-		trig = 'h3',
-		name = 'h3',
-		desc = 'HTML - Defines header 3',
-	}, fmt('<h3>{}</h3>', i(1))
+			trig = 'h3',
+			name = 'h3',
+			desc = 'HTML - Defines header 3',
+		},
+		c(1, {
+			sn(nil, fmt('<h3>{}</h3>', i(1))),
+			sn(nil, fmt([[
+							<h3>
+								{}
+							</h3>
+						]], i(1)))
+		})
 	),
 	s({
-		trig = 'h4',
-		name = 'h4',
-		desc = 'HTML - Defines header 4',
-	}, fmt('<h4>{}</h4>', i(1))
+			trig = 'h4',
+			name = 'h4',
+			desc = 'HTML - Defines header 4',
+		},
+		c(1, {
+			sn(nil, fmt('<h4>{}</h4>', i(1))),
+			sn(nil, fmt([[
+							<h4>
+								{}
+							</h4>
+						]], i(1)))
+		})
 	),
 	s({
-		trig = 'h5',
-		name = 'h5',
-		desc = 'HTML - Defines header 5',
-	}, fmt('<h5>{}</h5>', i(1))
+			trig = 'h5',
+			name = 'h5',
+			desc = 'HTML - Defines header 5',
+		},
+		c(1, {
+			sn(nil, fmt('<h5>{}</h5>', i(1))),
+			sn(nil, fmt([[
+							<h5>
+								{}
+							</h5>
+						]], i(1)))
+		})
 	),
 	s({
-		trig = 'h6',
-		name = 'h6',
-		desc = 'HTML - Defines header 6',
-	}, fmt('<h6>{}</h6>', i(1))
+			trig = 'h6',
+			name = 'h6',
+			desc = 'HTML - Defines header 6',
+		},
+		c(1, {
+			sn(nil, fmt('<h6>{}</h6>', i(1))),
+			sn(nil, fmt([[
+							<h6>
+								{}
+							</h6>
+						]], i(1)))
+		})
 	),
 	s({
 		trig = 'head',
@@ -456,14 +551,39 @@ return {
 	}, t('<hr>')
 	),
 	s({
-		trig = 'html',
-		name = 'html',
-		desc = 'HTML - Defines an html document',
+			trig = 'html',
+			name = 'html',
+			desc = 'HTML - Defines an html document',
+		},
+		c(1, {
+			sn(nil, fmt([[
+							<html>
+								{}
+							</html>
+						]], i(1))),
+			sn(nil, fmt([[
+							<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+								{}
+							</html>
+						]], i(1)))
+		})
+	),
+	s({
+		trig = 'sst',
+		name = 'Standard starter template',
+		desc = 'Template for starting an HTML file'
 	}, fmt([[
-		<html>
-			{}
-		</html>
-		]], i(1))
+			<!DOCTYPE html>
+			<html lang="{}" xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+					<meta charset="UTF-8">
+					<title>{}</title>
+				</head>
+				<body>
+					{}
+				</body>
+			</html>"
+			]], { i(1, 'en'), i(2, 'Title'), i(0) })
 	),
 	s({
 		trig = 'html5',
@@ -471,7 +591,7 @@ return {
 		desc = 'HTML - Defines a template for a html5 document',
 	}, fmt([[
             <!DOCTYPE html>
-            <html lang="{}">
+            <html lang="{}" xmlns="http://www.w3.org/1999/xhtml">
             	<head>
             		<meta charset="UTF-8">
             		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -491,23 +611,35 @@ return {
 	}, fmt('<i>{}</i>', i(1))
 	),
 	s({
-		trig = 'iframe',
-		name = 'iframe',
-		desc = 'HTML - Defines an inline sub window',
-	}, fmt('<iframe src="{}">{}</iframe>', { i(1), i(2) })
+			trig = 'iframe',
+			name = 'iframe',
+			desc = 'HTML - Defines an inline sub window',
+		},
+		c(1, {
+			sn(nil, fmt('<iframe>{}</iframe>', i(1))),
+			sn(nil, fmt('<iframe src="{}">{}</iframe>', { i(1), i(2) }))
+		})
 	),
 	s({
-		trig = 'img',
-		name = 'img',
-		desc = 'HTML - Defines an image',
-	}, fmt('<img src="{}" alt="{}">', { i(1), i(2) })
+			trig = 'img',
+			name = 'img',
+			desc = 'HTML - Defines an image',
+		},
+		c(1, {
+			sn(nil, fmt('<img{}>', i(1))),
+			sn(nil, fmt('<img src="{}" alt="{}">', { i(1), i(2) }))
+		})
 	),
 
 	s({
-		trig = 'input',
-		name = 'input',
-		desc = 'HTML - Defines an input field',
-	}, fmt('<input type="{}" name="{}" value="{}">', { i(1), i(2), i(3) })
+			trig = 'input',
+			name = 'input',
+			desc = 'HTML - Defines an input field',
+		},
+		c(1, {
+			sn(nil, fmt('<input{}>', i(1))),
+			sn(nil, fmt('<input type="{}" name="{}" value="{}">', { i(1), i(2), i(3) }))
+		})
 	),
 
 	s({
@@ -549,10 +681,14 @@ return {
 	}, fmt('<li>{}</li>', i(1))
 	),
 	s({
-		trig = 'link',
-		name = 'link',
-		desc = 'HTML - Defines a resource reference',
-	}, fmt('<link rel="{}" type="{}" href="{}">', { i(1), i(2), i(3) })
+			trig = 'link',
+			name = 'link',
+			desc = 'HTML - Defines a resource reference',
+		},
+		c(1, {
+			sn(nil, fmt('<link{}>', i(1))),
+			sn(nil, fmt('<link rel="{}" type="{}" href="{}">', { i(1), i(2), i(3) }))
+		})
 	),
 	s({
 		trig = 'main',
@@ -569,9 +705,10 @@ return {
 		name = 'map',
 		desc = 'HTML - Defines an image map',
 	}, fmt([[
-<map name="{}">
-	{}
-</map>]], { i(1), i(2) })
+			<map name="{}">
+				{}
+			</map>
+			]], { i(1), i(2) })
 	),
 	s({
 		trig = 'mark',
@@ -596,16 +733,24 @@ return {
 	}, fmt('<menuitem>{}</menuitem>', i(1))
 	),
 	s({
-		trig = 'meta',
-		name = 'meta',
-		desc = 'HTML - Defines meta information',
-	}, fmt('<meta name="{}" content="{}">', { i(1), i(2) })
+			trig = 'meta',
+			name = 'meta',
+			desc = 'HTML - Defines meta information',
+		},
+		c(1, {
+			sn(nil, fmt('<meta{}>', i(1))),
+			sn(nil, fmt('<meta name="{}" content="{}">', { i(1), i(2) }))
+		})
 	),
 	s({
-		trig = 'meter',
-		name = 'meter',
-		desc = 'HTML - Defines measurement within a predefined range',
-	}, fmt('<meter value="{}">{}</meter>', { i(1), i(2) })
+			trig = 'meter',
+			name = 'meter',
+			desc = 'HTML - Defines measurement within a predefined range',
+		},
+		c(1, {
+			sn(nil, fmt('<meter>{}</meter>', i(1))),
+			sn(nil, fmt('<meter value="{}">{}</meter>', { i(1), i(2) }))
+		})
 	),
 	s({
 		trig = 'nav',
@@ -639,14 +784,40 @@ return {
 	})
 	),
 	s({
-		trig = 'ol',
-		name = 'ol',
-		desc = 'HTML - Defines an ordered list',
-	}, fmt([[
-		<ol>
-			{}
-		</ol>
-		]], i(1))
+			trig = 'ol',
+			name = 'ol',
+			desc = 'HTML - Defines an ordered list',
+		},
+		c(1, {
+			sn(nil,
+				fmt([[
+					<ol>
+						{}
+					</ol>
+					]], i(1))
+			),
+			sn(nil,
+				fmt([[
+					<ol class="{}">
+						{}
+					</ol>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<ol id="{}">
+						{}
+					</ol>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<ol class="{}" id="{}">
+						{}
+					</ol>
+					]], { i(2), i(3), i(1) })
+			)
+		})
 	),
 	s({
 		trig = 'optgroup',
@@ -659,28 +830,46 @@ return {
 		]], i(1))
 	),
 	s({
-		trig = 'option',
-		name = 'option',
-		desc = 'HTML - Defines an option in a drop-down list',
-	}, fmt('<option value="{}">{}</option>', { i(1), i(2) })
+			trig = 'option',
+			name = 'option',
+			desc = 'HTML - Defines an option in a drop-down list',
+		},
+		c(1, {
+			sn(nil, fmt('<option>{}</option>', i(1))),
+			sn(nil, fmt('<option value="{}">{}</option>', { i(1), i(2) }))
+		})
 	),
 	s({
-		trig = 'output',
-		name = 'output',
-		desc = 'HTML - Defines some types of output',
-	}, fmt('<output name="{}" for="{}">{}</output>', { i(1), i(2), i(3) })
+			trig = 'output',
+			name = 'output',
+			desc = 'HTML - Defines some types of output',
+		},
+		c(1, {
+			sn(nil, fmt('<output>{}</output>', i(1))),
+			sn(nil, fmt('<output name="{}" for="{}">{}</output>', { i(1), i(2), i(3) }))
+		})
 	),
 	s({
-		trig = 'p',
-		name = 'p',
-		desc = 'HTML - Defines a paragraph',
-	}, fmt('<p>{}</p>', i(1))
+			trig = 'p',
+			name = 'p',
+			desc = 'HTML - Defines a paragraph',
+		},
+		c(1, {
+			sn(nil, fmt('<p>{}</p>', i(1))),
+			sn(nil, fmt('<p class="{}">{}</p>', { i(2), i(1) })),
+			sn(nil, fmt('<p id="{}">{}</p>', { i(2), i(1) })),
+			sn(nil, fmt('<p class="{}" id="{}">{}</p>', { i(2), i(3), i(1) }))
+		})
 	),
 	s({
-		trig = 'param',
-		name = 'param',
-		desc = 'HTML - Defines a parameter for an object',
-	}, fmt('<param name="{}" value="{}">', { i(1), i(2) })
+			trig = 'param',
+			name = 'param',
+			desc = 'HTML - Defines a parameter for an object',
+		},
+		c(1, {
+			sn(nil, fmt('<param{}>', i(1))),
+			sn(nil, fmt('<param name="{}" value="{}">', { i(1), i(2) }))
+		})
 	),
 	s({
 		trig = 'pre',
@@ -689,10 +878,14 @@ return {
 	}, fmt('<pre>{}</pre>', i(1))
 	),
 	s({
-		trig = 'progress',
-		name = 'progress',
-		desc = 'HTML - Defines progress of a task of any kind',
-	}, fmt('<progress value="{}" max="{}">{}</progress>', { i(1), i(2), i(3) })
+			trig = 'progress',
+			name = 'progress',
+			desc = 'HTML - Defines progress of a task of any kind',
+		},
+		c(1, {
+			sn(nil, fmt('<progress>{}</progress>', i(1))),
+			sn(nil, fmt('<progress value="{}" max="{}">{}</progress>', { i(1), i(2), i(3) }))
+		})
 	),
 	s({
 		trig = 'q',
@@ -771,10 +964,14 @@ return {
 	}, fmt('<small>{}</small>', i(1))
 	),
 	s({
-		trig = 'source',
-		name = 'source',
-		desc = 'HTML - Defines media resource',
-	}, fmt('<source src="{}" type="{}">', { i(1), i(2) })
+			trig = 'source',
+			name = 'source',
+			desc = 'HTML - Defines media resource',
+		},
+		c(1, {
+			sn(nil, fmt('<source{}>', i(1))),
+			sn(nil, fmt('<source src="{}" type="{}">', { i(1), i(2) }))
+		})
 	),
 	s({
 		trig = 'span',
@@ -887,10 +1084,18 @@ return {
 	}, fmt('<title>{}</title>', i(1))
 	),
 	s({
-		trig = 'tr',
-		name = 'tr',
-		desc = 'HTML - Defines a table row',
-	}, fmt('<tr>{}</tr>', i(1))
+			trig = 'tr',
+			name = 'tr',
+			desc = 'HTML - Defines a table row',
+		},
+		c(1, {
+			sn(nil, fmt('<tr>{}</tr>', i(1))),
+			sn(nil, fmt([[
+						<tr>
+							{}
+						</tr>
+						]], i(1)))
+		})
 	),
 	s({
 		trig = 'track',
@@ -910,14 +1115,40 @@ return {
 	}, fmt('<u>{}</u>', i(1))
 	),
 	s({
-		trig = 'ul',
-		name = 'ul',
-		desc = 'HTML - Defines an unordered list',
-	}, fmt([[
-		<ul>
-			{}
-		</ul>
-		]], i(1))
+			trig = 'ul',
+			name = 'ul',
+			desc = 'HTML - Defines an unordered list',
+		},
+		c(1, {
+			sn(nil,
+				fmt([[
+					<ul>
+						{}
+					</ul>
+					]], i(1))
+			),
+			sn(nil,
+				fmt([[
+					<ul class="{}">
+						{}
+					</ul>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<ul id="{}">
+						{}
+					</ul>
+					]], { i(2), i(1) })
+			),
+			sn(nil,
+				fmt([[
+					<ul class="{}" id="{}">
+						{}
+					</ul>
+					]], { i(2), i(3), i(1) })
+			)
+		})
 	),
 	s({
 		trig = 'var',
@@ -933,121 +1164,10 @@ return {
             <video width="{}" height="{}" controls>
 				{}
             </video>
-					]], {
+			]], {
 		i(1),
 		i(2),
 		i(3)
 	})
 	),
-
-	s({
-		trig = 'div.',
-		name = 'div.',
-		desc = 'HTML - Defines a section in a document',
-	}, fmt([[
-			<div class="{}">
-			{}
-			</div>
-				]], { i(1), i(1) })
-	),
-	s({
-		trig = 'div#',
-		name = 'div#',
-		desc = 'HTML - Defines a section in a document',
-	}, fmt([[
-<div id="{}">
-	{}
-</div>
-]], { i(1), i(2) })
-	),
-
-	s({
-		trig = 'div.#',
-		name = 'div.#',
-		desc = 'HTML - Defines a section in a document',
-	}, fmt([[
-		<div class="{}" id="{}">
-			{}
-		</div>
-		]], { i(1), i(2), i(3) })
-	),
-
-	s({
-		trig = 'p.',
-		name = 'p.',
-		desc = 'HTML - Defines a paragraph',
-	}, fmt('<p class="{}">{}</p>', { i(1), i(2) })
-	),
-	s({
-		trig = 'p#',
-		name = 'p#',
-		desc = 'HTML - Defines a paragraph',
-	}, fmt('<p id="{}">{}</p>', { i(1), i(2) })
-	),
-	s({
-		trig = 'p.#',
-		name = 'p.#',
-		desc = 'HTML - Defines a paragraph',
-	}, fmt('<p class="{}" id="{}">{}</p>', { i(1), i(2), i(3) })
-	),
-	s({
-		trig = 'ul.',
-		name = 'ul.',
-		desc = 'HTML - Defines an unordered list',
-	}, fmt([[
-		<ul class="{}">
-			{}
-		</ul>
-		]], { i(1), i(2) })
-	),
-	s({
-		trig = 'ul#',
-		name = 'ul#',
-		desc = 'HTML - Defines an unordered list',
-	}, fmt([[
-<ul id="{}">
-	{}
-</ul>
-]], { i(1), i(2) })
-	),
-	s({
-		trig = 'ul.#',
-		name = 'ul.#',
-		desc = 'HTML - Defines an unordered list',
-	}, fmt([[
-<ul class="{}" id="{}">"
-	{}
-</ul>
-]], { i(1), i(2), i(3) })
-	),
-	s({
-		trig = 'ol.',
-		name = 'ol.',
-		desc = 'HTML - Defines an ordered list',
-	}, fmt([[
-<ol class="{}">"
-	{}
-</ol>
-]], { i(1), i(2) })
-	),
-	s({
-		trig = 'ol#',
-		name = 'ol#',
-		desc = 'HTML - Defines an ordered list',
-	}, fmt([[
-<ol id="{}">
-	{}
-</ol>
-]], { i(1), i(2) })
-	),
-	s({
-		trig = 'ol.#',
-		name = 'ol.#',
-		desc = 'HTML - Defines an ordered list',
-	}, fmt([[
-	<ol class="{}" id="{}">
-		{}
-	</ol>
-	]], { i(1), i(2), i(3) })
-	)
 }
