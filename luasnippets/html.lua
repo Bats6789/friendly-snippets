@@ -583,7 +583,7 @@ return {
 				<body>
 					{}
 				</body>
-			</html>"
+			</html>
 			]], { i(1, 'en'), i(2, 'Title'), i(0) })
 	),
 	s({
