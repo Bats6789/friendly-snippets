@@ -17,24 +17,24 @@ local k = require("luasnip.nodes.key_indexer").new_key
 
 return {
 	s({
-		trig = "/**",
-		desc = "A C comment block for functions in doxygen format.",
-		name = "comment"
-	}, {
-		fmta([[
-			/**
-			 * <>
-			 */<>
-			 ]], {
+			trig = "/**",
+			desc = "A C comment block for functions in doxygen format.",
+			name = "comment"
+		},
+		{
 			c(1, {
 				sn(nil, fmta([[
-						* <>
+					/**
+					 * <>
+					 */
 					]], { i(1) }
 				)),
 				sn(nil, fmta([[
-					* <>
-					*
-					* <><>
+						/**
+						 * <>
+						 *
+						 * <><>
+						 */
 					]],
 					{
 						i(2, 'A one-line summary.'),
@@ -43,16 +43,18 @@ return {
 					}
 				)),
 				sn(nil, fmta([[
-					* <>
-					*
-					* <><>
-					*
-					* @param <> <>
-					* @return <>
-					*
-					* @example
-					* // <>
-					* <>
+						/**
+						 * <>
+						 *
+						 * <><>
+						 *
+						 * @param <> <>
+						 * @return <>
+						 *
+						 * @example
+						 * // <>
+						 * <>
+						 */
 					]],
 					{
 						i(2, 'A one-line summary.'),
@@ -67,8 +69,8 @@ return {
 				))
 			}),
 			i(0),
-		})
-	}),
+		}
+	),
 	s({
 			trig = "@param",
 			desc = "Type and description of a function parameter.",
