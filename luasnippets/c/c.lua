@@ -83,9 +83,6 @@ return {
 					t('0'),
 					t('EXIT_SUCCESS')
 				}),
-				-- f(function(_, _, _)
-				-- 	return 'todo'
-				-- end, {}, {})
 			}
 		)
 	),
