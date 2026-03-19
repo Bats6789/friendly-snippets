@@ -15,6 +15,96 @@ local fmt = require("luasnip.extras.fmt").fmt
 local fmta = require("luasnip.extras.fmt").fmta
 local k = require("luasnip.nodes.key_indexer").new_key
 
+local param_count = 0;
+
+local function get_nearest_func_node()
+	local row = vim.api.nvim_win_get_cursor(0)[1]
+	local query = vim.treesitter.query.parse(vim.bo.filetype, [[
+	  (function_declarator) @function
+	]])
+
+	local node = vim.treesitter.get_node()
+
+	if not node then
+		return nil
+	end
+
+	for id, captured_node in query:iter_captures(node, 0, row) do
+		local capture_name = query.captures[id]
+		if capture_name == 'function' then
+			return captured_node
+		end
+	end
+
+	return nil
+end
+
+local function get_identifier_name(node)
+	local query = vim.treesitter.query.parse(vim.bo.filetype, [[
+		(identifier) @name
+	]])
+
+	for id, captured_node in query:iter_captures(node, 0) do
+		local capture_name = query.captures[id]
+		if capture_name == 'name' then
+			return vim.treesitter.get_node_text(captured_node, 0)
+		end
+	end
+end
+
+local function get_ts_func_name()
+	local node = get_nearest_func_node()
+	if node then
+		return get_identifier_name(node)
+	else
+		return "function_name"
+	end
+end
+
+local function get_ts_param_names()
+	local results = {}
+	local query = vim.treesitter.query.parse(vim.bo.filetype, [[
+		  (parameter_declaration) @param
+	]])
+
+	local node = get_nearest_func_node()
+
+	if not node then
+		return results
+	end
+
+	for id, captured_node in query:iter_captures(node, 0) do
+		local capture_name = query.captures[id]
+		if capture_name == 'param' then
+			local name = get_identifier_name(captured_node)
+			table.insert(results, name)
+		end
+	end
+
+	return results
+end
+
+local function get_ts_func_type_name()
+	local node = get_nearest_func_node()
+
+	if not node then
+		return ''
+	end
+
+	local check_node = node:prev_sibling();
+
+	if not check_node then
+		return ''
+	end
+
+	local name = vim.treesitter.get_node_text(check_node, 0)
+	if name ~= 'void' then
+		return name
+	end
+
+	return ''
+end
+
 return {
 	s({
 			trig = "/**",
@@ -29,6 +119,52 @@ return {
 					 */
 					]], { i(1) }
 				)),
+				sn(nil, fmta([[
+					/**
+					 * @brief <>
+					 *
+					 * <><><>
+					 */
+				]], {
+					i(1, 'Brief description of the function'),
+					i(2, 'Description'),
+					d(3, function()
+						local params = get_ts_param_names()
+						local nodes = {}
+						param_count = #params
+
+						if param_count == 0 then
+							return sn(nil, t(''))
+						end
+
+						table.insert(nodes, t({'', ' * '}))
+
+						for index = 1, param_count do
+							local param = params[index]
+							table.insert(nodes, t({'', ' * @param ' .. param .. ' '}))
+							table.insert(nodes, i(index, 'Details for param: ' .. param))
+						end
+
+						return sn(nil, nodes)
+					end, {}),
+					d(4, function()
+						local type_name = get_ts_func_type_name()
+						local nodes = {}
+
+						if type_name ~= '' then
+							if param_count == 0 then
+								table.insert(nodes, t({'', ' * '}))
+							end
+
+							table.insert(nodes, t({'', ' * @return '}))
+							table.insert(nodes, i(1, 'Description of return value'))
+
+							return sn(nil, nodes)
+						end
+
+						return sn(nil, t(''))
+					end, {})
+				})),
 				sn(nil, fmta([[
 						/**
 						 * <>
